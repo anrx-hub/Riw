@@ -65,18 +65,29 @@
 
         .view-section { display: none; }
         .back-btn { background: none; border: none; color: var(--primary-red); font-size: 16px; cursor: pointer; margin-bottom: 20px; font-weight: bold; }
-        .novel-header-detail { display: flex; gap: 20px; margin-bottom: 30px; background: var(--bg-card); padding: 20px; border-radius: 12px; }
+        
+        .novel-header-detail { display: flex; gap: 20px; margin-bottom: 20px; background: var(--bg-card); padding: 20px; border-radius: 12px; }
         .novel-header-detail img { width: 150px; height: 210px; object-fit: cover; border-radius: 8px; }
+        .novel-synopsis { background: var(--bg-card); padding: 20px; border-radius: 12px; margin-bottom: 30px; line-height: 1.7; border-right: 3px solid var(--accent-red); }
+        .novel-synopsis h4 { margin-bottom: 10px; color: var(--accent-red); font-size: 16px; }
+
         .chapters-list { list-style: none; margin-top: 20px; }
         .chapters-list li { background: var(--bg-card); padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; border: 1px solid #222; transition: 0.2s; }
         .chapters-list li:hover { border-color: var(--primary-red); color: var(--accent-red); }
+        
         .reader-content { background: #121212; padding: 25px; border-radius: 12px; line-height: 2; font-size: 19px; color: #e0e0e0; margin-top: 20px; white-space: pre-line; }
+        
+        /* 🕹️ أزرار التنقل الجديدة بين الفصول */
+        .chapter-navigation { display: flex; justify-content: space-between; margin-top: 25px; gap: 15px; }
+        .nav-chap-btn { flex: 1; background: var(--bg-card); color: white; border: 1px solid #333; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
+        .nav-chap-btn:hover { border-color: var(--primary-red); color: var(--accent-red); }
+        .nav-chap-btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: #222; color: var(--text-muted); }
 
         .admin-form { background: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid var(--primary-red); margin-bottom: 30px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 14px; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; background: #0b0b0b; border: 1px solid #333; color: white; border-radius: 6px; }
-        .form-group textarea { height: 250px; }
+        .form-group textarea { height: 150px; }
         .submit-btn { background: var(--primary-red); color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-bottom: 10px; }
         .danger-btn { background: #b71c1c; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
 
@@ -122,6 +133,10 @@
                     <input type="text" id="edit-title">
                 </div>
                 <div class="form-group">
+                    <label>تعديل قصة/ملخص الرواية</label>
+                    <textarea id="edit-description" style="height: 100px;"></textarea>
+                </div>
+                <div class="form-group">
                     <label>تعديل رابط الغلاف</label>
                     <input type="text" id="edit-image">
                 </div>
@@ -154,7 +169,7 @@
                 </div>
                 <div class="form-group">
                     <label>تعديل محتوى الفصل</label>
-                    <textarea id="edit-chapter-content"></textarea>
+                    <textarea id="edit-chapter-content" style="height: 250px;"></textarea>
                 </div>
                 <button class="submit-btn" style="background: #009688;" onclick="updateChapter()">حفظ تعديلات الفصل سحابياً</button>
                 <button class="danger-btn" style="background: #e65100;" onclick="deleteChapter()">مسح هذا الفصل فقط</button>
@@ -168,6 +183,10 @@
                     <input type="text" id="new-title">
                 </div>
                 <div class="form-group">
+                    <label>قصة / ملخص الرواية</label>
+                    <textarea id="new-description" placeholder="اكتب هنا أحداث وقصة الرواية باختصار لجذب القراء..." style="height: 120px;"></textarea>
+                </div>
+                <div class="form-group">
                     <label>رابط صورة الغلاف</label>
                     <input type="text" id="new-image">
                 </div>
@@ -177,7 +196,7 @@
                 </div>
                 <div class="form-group">
                     <label>التقييم</label>
-                    <input type="text" id="new-rating">
+                    <input type="text" id="new-rating" value="4.5">
                 </div>
                 <button class="submit-btn" onclick="createNewNovel()">حفظ ونشر الرواية سحابياً</button>
             </div>
@@ -191,11 +210,11 @@
                 </div>
                 <div class="form-group">
                     <label>عنوان أو رقم الفصل</label>
-                    <input type="text" id="chapter-title">
+                    <input type="text" id="chapter-title" placeholder="مثال: الفصل 1: البداية">
                 </div>
                 <div class="form-group">
                     <label>محتوى الفصل (نص الرواية)</label>
-                    <textarea id="chapter-content"></textarea>
+                    <textarea id="chapter-content" style="height: 250px;"></textarea>
                 </div>
                 <button class="submit-btn" style="background: #3f51b5;" onclick="createNewChapter()">نشر الفصل لجميع الزوار</button>
             </div>
@@ -213,6 +232,7 @@
         <section id="novel-detail-section" class="view-section">
             <button class="back-btn" onclick="showSection('home-section')">⬅️ العودة للرئيسية</button>
             <div id="novel-info-container"></div>
+            <div id="novel-synopsis-container" class="novel-synopsis"></div>
             <h3>الفصول المتاحة:</h3>
             <ul class="chapters-list" id="chapters-display-list"></ul>
         </section>
@@ -222,6 +242,12 @@
             <button class="back-btn" id="back-to-novel-btn">⬅️ العودة للرواية</button>
             <h2 id="reader-chapter-title"></h2>
             <div class="reader-content" id="reader-text-box"></div>
+            
+            <!-- أزرار التنقل السفلية -->
+            <div class="chapter-navigation">
+                <button class="nav-chap-btn" id="prev-chapter-btn"><i class="fa-solid fa-arrow-right"></i> الفصل السابق</button>
+                <button class="nav-chap-btn" id="next-chapter-btn">الفصل التالي <i class="fa-solid fa-arrow-left"></i></button>
+            </div>
         </section>
 
     </div>
@@ -308,13 +334,21 @@
                 </div>
             `;
 
+            // عرض القصة / الوصف
+            const synopsisContainer = document.getElementById('novel-synopsis-container');
+            if(novel.description) {
+                synopsisContainer.style.display = "block";
+                synopsisContainer.innerHTML = `<h4><i class="fa-solid fa-book-open"></i> قصة الرواية:</h4><p>${novel.description}</p>`;
+            } else {
+                synopsisContainer.style.display = "none";
+            }
+
             const list = document.getElementById('chapters-display-list');
             list.innerHTML = '';
             if(novel.chapters.length === 0) {
                 list.innerHTML = '<p style="color: var(--text-muted)">لا توجد فصول منشورة بعد.</p>';
             } else {
                 novel.chapters.forEach((chapter, index) => {
-                    // سيتولى السكريبت المستدعى في الأعلى فتح الإعلان تلقائياً عند النقر هنا
                     list.innerHTML += `<li onclick="readChapter(${id}, ${index});">${chapter.title}</li>`;
                 });
             }
@@ -322,11 +356,33 @@
 
         function readChapter(novelId, chapterIndex) {
             const novel = globalNovels.find(n => n.id == novelId);
+            if (!novel || !novel.chapters[chapterIndex]) return;
+
             const chapter = novel.chapters[chapterIndex];
             
             showSection('reader-section');
             document.getElementById('reader-chapter-title').innerText = chapter.title;
             document.getElementById('reader-text-box').innerText = chapter.content;
+
+            // إعداد أزرار الانتقال (السابق والتالي)
+            const prevBtn = document.getElementById('prev-chapter-btn');
+            const nextBtn = document.getElementById('next-chapter-btn');
+
+            // الفصل السابق (العودة إلى الخلف في القائمة)
+            if (chapterIndex > 0) {
+                prevBtn.disabled = false;
+                prevBtn.onclick = function() { readChapter(novelId, chapterIndex - 1); };
+            } else {
+                prevBtn.disabled = true;
+            }
+
+            // الفصل التالي (التقدم للأمام في القائمة)
+            if (chapterIndex < novel.chapters.length - 1) {
+                nextBtn.disabled = false;
+                nextBtn.onclick = function() { readChapter(novelId, chapterIndex + 1); };
+            } else {
+                nextBtn.disabled = true;
+            }
 
             document.getElementById('back-to-novel-btn').onclick = function() { openNovelDetail(novelId); };
         }
@@ -347,6 +403,7 @@
             const novel = globalNovels.find(n => n.id == novelId);
             if(novel) {
                 document.getElementById('edit-title').value = novel.title;
+                document.getElementById('edit-description').value = novel.description || '';
                 document.getElementById('edit-image').value = novel.image;
                 document.getElementById('edit-genres').value = novel.genres;
                 document.getElementById('edit-rating').value = novel.rating;
@@ -402,10 +459,11 @@
         async function updateNovel() {
             const novelId = document.getElementById('edit-select-novel').value;
             const title = document.getElementById('edit-title').value;
+            const description = document.getElementById('edit-description').value;
             const image = document.getElementById('edit-image').value;
             const genres = document.getElementById('edit-genres').value;
             const rating = document.getElementById('edit-rating').value;
-            const { error } = await _supabase.from('novels').update({ title, image, genres, rating }).eq('id', novelId);
+            const { error } = await _supabase.from('novels').update({ title, description, image, genres, rating }).eq('id', novelId);
             if(error) alert('حدث خطأ'); else { alert('تم تعديل بيانات الرواية!'); await fetchNovelsFromCloud(); showSection('home-section'); }
         }
 
@@ -418,12 +476,13 @@
 
         async function createNewNovel() {
             const title = document.getElementById('new-title').value;
+            const description = document.getElementById('new-description').value;
             const image = document.getElementById('new-image').value || 'https://via.placeholder.com/400x560?text=No+Cover';
             const genres = document.getElementById('new-genres').value;
             const rating = document.getElementById('new-rating').value;
             if(!title) return alert('الاسم مطلوب');
-            const { error } = await _supabase.from('novels').insert([{ title, image, genres, rating }]);
-            if(error) alert('حدث خطأ'); else { alert('تم حفظ الرواية!'); await fetchNovelsFromCloud(); showSection('home-section'); }
+            const { error } = await _supabase.from('novels').insert([{ title, description, image, genres, rating }]);
+            if(error) alert('حدث خطأ'); else { alert('تم حفظ الرواية الجديدة بالقصة!'); await fetchNovelsFromCloud(); showSection('home-section'); }
         }
 
         async function createNewChapter() {
