@@ -6,6 +6,10 @@
     <title>King Anwar - منصة الروايات السحابية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- 💰 كود إعلان Popunder الخاص بك من Adsterra -->
+    <script src="https://pl29586659.effectivecpmnetwork.com/66/8b/cb/668bcb4bb64a3fe6f4d61ba82b713040.js"></script>
+
     <style>
         :root {
             --bg-main: #0b0b0b;
@@ -87,7 +91,6 @@
     <div class="overlay" id="overlay"></div>
 
     <header>
-        <!-- عند الضغط العادي يعيدك للرئيسية، وإذا ضغطت 5 مرات متتالية يفتح خانة السر للوحة التحكم -->
         <div class="logo" onclick="handleLogoClick()">King <span>Anwar</span></div>
         <div class="nav-buttons">
             <button class="menu-btn" id="menuOpenBtn"><i class="fa-solid fa-bars"></i></button>
@@ -103,11 +106,10 @@
 
     <div class="container">
         
-        <!-- لوحة التحكم المحمية والمخفية -->
+        <!-- لوحة التحكم السرية -->
         <section id="admin-section" class="view-section">
             <h2 class="section-title">لوحة التحكم السحابية الشاملة</h2>
             
-            <!-- 1. قسم تعديل الروايات وحذفها -->
             <div class="admin-form" style="border-color: #ff9800;">
                 <h3>🛠️ تعديل أو حذف رواية موجودة</h3>
                 <br>
@@ -135,7 +137,6 @@
                 <button class="danger-btn" onclick="deleteNovel()">⚠️ حذف الرواية نهائياً</button>
             </div>
 
-            <!-- 2. قسم تعديل الفصول المنشورة -->
             <div class="admin-form" style="border-color: #009688;">
                 <h3>📝 تعديل أو حذف فصل موجود</h3>
                 <br>
@@ -159,30 +160,28 @@
                 <button class="danger-btn" style="background: #e65100;" onclick="deleteChapter()">مسح هذا الفصل فقط</button>
             </div>
 
-            <!-- 3. قسم إنشاء رواية جديدة بالكامل -->
             <div class="admin-form">
                 <h3>✨ إنشاء رواية جديدة بالكامل</h3>
                 <br>
                 <div class="form-group">
                     <label>اسم الرواية</label>
-                    <input type="text" id="new-title" placeholder="مثال: ملك سمات الفنون القتالية">
+                    <input type="text" id="new-title">
                 </div>
                 <div class="form-group">
                     <label>رابط صورة الغلاف</label>
-                    <input type="text" id="new-image" placeholder="ضع رابط الصورة هنا">
+                    <input type="text" id="new-image">
                 </div>
                 <div class="form-group">
                     <label>التصنيفات</label>
-                    <input type="text" id="new-genres" placeholder="مثال: أكشن، خيال، مغامرة">
+                    <input type="text" id="new-genres">
                 </div>
                 <div class="form-group">
                     <label>التقييم</label>
-                    <input type="text" id="new-rating" placeholder="مثال: 9.5">
+                    <input type="text" id="new-rating">
                 </div>
                 <button class="submit-btn" onclick="createNewNovel()">حفظ ونشر الرواية سحابياً</button>
             </div>
 
-            <!-- 4. قسم إضافة فصل جديد -->
             <div class="admin-form" style="border-color: #3f51b5;">
                 <h3>✍️ إضافة فصل جديد لرواية موجودة</h3>
                 <br>
@@ -192,17 +191,17 @@
                 </div>
                 <div class="form-group">
                     <label>عنوان أو رقم الفصل</label>
-                    <input type="text" id="chapter-title" placeholder="مثال: الفصل الأول: بداية النهاية">
+                    <input type="text" id="chapter-title">
                 </div>
                 <div class="form-group">
                     <label>محتوى الفصل (نص الرواية)</label>
-                    <textarea id="chapter-content" placeholder="اكتب أو الصق نص الفصل هنا..."></textarea>
+                    <textarea id="chapter-content"></textarea>
                 </div>
                 <button class="submit-btn" style="background: #3f51b5;" onclick="createNewChapter()">نشر الفصل لجميع الزوار</button>
             </div>
         </section>
 
-        <!-- القسم الرئيسي (الرئيسية) -->
+        <!-- الرئيسية -->
         <section id="home-section">
             <h2 class="section-title">تحديثات الروايات الرائجة</h2>
             <div class="novels-grid" id="novels-display-grid">
@@ -210,7 +209,7 @@
             </div>
         </section>
 
-        <!-- قسم تفاصيل الرواية والفصول -->
+        <!-- تفاصيل الرواية -->
         <section id="novel-detail-section" class="view-section">
             <button class="back-btn" onclick="showSection('home-section')">⬅️ العودة للرئيسية</button>
             <div id="novel-info-container"></div>
@@ -218,7 +217,7 @@
             <ul class="chapters-list" id="chapters-display-list"></ul>
         </section>
 
-        <!-- قسم قراءة الفصل -->
+        <!-- قراءة الفصل -->
         <section id="reader-section" class="view-section">
             <button class="back-btn" id="back-to-novel-btn">⬅️ العودة للرواية</button>
             <h2 id="reader-chapter-title"></h2>
@@ -234,24 +233,19 @@
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         const ADMIN_PASSWORD = "Anwar2026"; 
         let globalNovels = [];
-
-        // متغيرات للتحكم بالنقرات السرية لدخول الإدارة
         let logoClickCount = 0;
         let logoClickTimeout;
 
         function handleLogoClick() {
             logoClickCount++;
-            
             clearTimeout(logoClickTimeout);
-            logoClickTimeout = setTimeout(() => {
-                logoClickCount = 0;
-            }, 1500); // إذا لم تضغط بسرعة خلال ثانية ونصف سيتصفّر العداد
+            logoClickTimeout = setTimeout(() => { logoClickCount = 0; }, 1500);
 
             if (logoClickCount === 5) {
-                logoClickCount = 0; // تصفير
-                checkAdminPassword(); // فتح نافذة كلمة السر
+                logoClickCount = 0;
+                checkAdminPassword();
             } else if (logoClickCount === 1) {
-                showSection('home-section'); // الضغطة الأولى العادية تأخذك للرئيسية كالمعتاد
+                showSection('home-section');
             }
         }
 
@@ -263,10 +257,7 @@
             if (cError) return console.error(cError);
 
             globalNovels = novelsData.map(novel => {
-                return {
-                    ...novel,
-                    chapters: chaptersData.filter(ch => ch.novel_id === novel.id)
-                }
+                return { ...novel, chapters: chaptersData.filter(ch => ch.novel_id === novel.id) }
             });
 
             renderNovels();
@@ -276,12 +267,10 @@
         function renderNovels() {
             const grid = document.getElementById('novels-display-grid');
             grid.innerHTML = '';
-            
             if(globalNovels.length === 0) {
                 grid.innerHTML = '<p style="color:var(--text-muted)">لا توجد روايات منشورة حالياً.</p>';
                 return;
             }
-
             globalNovels.forEach(novel => {
                 const lastChapter = novel.chapters.length > 0 ? novel.chapters[novel.chapters.length - 1].title : 'لا يوجد فصول';
                 grid.innerHTML += `
@@ -303,193 +292,6 @@
             });
         }
 
-        function updateNovelSelects() {
-            const selectAdd = document.getElementById('select-novel');
-            const selectEdit = document.getElementById('edit-select-novel');
-            const selectEditChapNovel = document.getElementById('edit-chapter-select-novel');
-            
-            let options = '';
-            globalNovels.forEach(novel => {
-                options += `<option value="${novel.id}">${novel.title}</option>`;
-            });
-
-            if(selectAdd) selectAdd.innerHTML = options;
-            if(selectEdit) {
-                selectEdit.innerHTML = options;
-                loadNovelDataToEdit();
-            }
-            if(selectEditChapNovel) {
-                selectEditChapNovel.innerHTML = options;
-                updateEditChapterSelect();
-            }
-        }
-
-        function loadNovelDataToEdit() {
-            const novelId = document.getElementById('edit-select-novel').value;
-            const novel = globalNovels.find(n => n.id == novelId);
-            if(novel) {
-                document.getElementById('edit-title').value = novel.title;
-                document.getElementById('edit-image').value = novel.image;
-                document.getElementById('edit-genres').value = novel.genres;
-                document.getElementById('edit-rating').value = novel.rating;
-            }
-        }
-
-        function updateEditChapterSelect() {
-            const novelId = document.getElementById('edit-chapter-select-novel').value;
-            const novel = globalNovels.find(n => n.id == novelId);
-            const selectChapter = document.getElementById('edit-select-chapter');
-            
-            if(novel && selectChapter) {
-                selectChapter.innerHTML = '';
-                if(novel.chapters.length === 0) {
-                    selectChapter.innerHTML = '<option value="">لا توجد فصول لهذه الرواية</option>';
-                    document.getElementById('edit-chapter-title').value = '';
-                    document.getElementById('edit-chapter-content').value = '';
-                    return;
-                }
-                novel.chapters.forEach(ch => {
-                    selectChapter.innerHTML += `<option value="${ch.id}">${ch.title}</option>`;
-                });
-                loadChapterDataToEdit();
-            }
-        }
-
-        function loadChapterDataToEdit() {
-            const novelId = document.getElementById('edit-chapter-select-novel').value;
-            const chapterId = document.getElementById('edit-select-chapter').value;
-            const novel = globalNovels.find(n => n.id == novelId);
-            
-            if(novel && chapterId) {
-                const chapter = novel.chapters.find(ch => ch.id == chapterId);
-                if(chapter) {
-                    document.getElementById('edit-chapter-title').value = chapter.title;
-                    document.getElementById('edit-chapter-content').value = chapter.content;
-                }
-            }
-        }
-
-        async function updateChapter() {
-            const chapterId = document.getElementById('edit-select-chapter').value;
-            const title = document.getElementById('edit-chapter-title').value;
-            const content = document.getElementById('edit-chapter-content').value;
-
-            if(!chapterId || !title || !content) return alert('تأكد من تعبئة جميع الحقول واختيار فصل صحيح');
-
-            const { error } = await _supabase.from('chapters').update({ title, content }).eq('id', chapterId);
-
-            if(error) {
-                alert('حدث خطأ أثناء تعديل الفصل');
-            } else {
-                alert('تم تحديث الفصل سحابياً بنجاح!');
-                await fetchNovelsFromCloud();
-                showSection('home-section');
-            }
-        }
-
-        async function deleteChapter() {
-            const chapterId = document.getElementById('edit-select-chapter').value;
-            if(!chapterId) return alert('اختر فصلاً أولاً');
-
-            if(!confirm("هل أنت متأكد من حذف هذا الفصل نهائياً؟")) return;
-
-            const { error } = await _supabase.from('chapters').delete().eq('id', chapterId);
-
-            if(error) {
-                alert('حدث خطأ أثناء حذف الفصل');
-            } else {
-                alert('تم حذف الفصل بنجاح!');
-                await fetchNovelsFromCloud();
-                showSection('home-section');
-            }
-        }
-
-        async function updateNovel() {
-            const novelId = document.getElementById('edit-select-novel').value;
-            const title = document.getElementById('edit-title').value;
-            const image = document.getElementById('edit-image').value;
-            const genres = document.getElementById('edit-genres').value;
-            const rating = document.getElementById('edit-rating').value;
-
-            if(!title) return alert('الاسم مطلوب');
-
-            const { error } = await _supabase.from('novels').update({ title, image, genres, rating }).eq('id', novelId);
-
-            if(error) {
-                alert('حدث خطأ أثناء التعديل');
-            } else {
-                alert('تم تعديل بيانات الرواية بنجاح!');
-                await fetchNovelsFromCloud();
-                showSection('home-section');
-            }
-        }
-
-        async function deleteNovel() {
-            const novelId = document.getElementById('edit-select-novel').value;
-            const novel = globalNovels.find(n => n.id == novelId);
-            
-            if(!confirm(`هل أنت متأكد تماماً من حذف رواية "${novel.title}" نهائياً؟ سيتم مسحها هي وجميع فصولها للجميع!`)) return;
-
-            const { error } = await _supabase.from('novels').delete().eq('id', novelId);
-
-            if(error) {
-                alert('حدث خطأ أثناء الحذف');
-            } else {
-                alert('تم حذف الرواية بنجاح.');
-                await fetchNovelsFromCloud();
-                showSection('home-section');
-            }
-        }
-
-        async function createNewNovel() {
-            const title = document.getElementById('new-title').value;
-            const image = document.getElementById('new-image').value || 'https://via.placeholder.com/400x560?text=No+Cover';
-            const genres = document.getElementById('new-genres').value;
-            const rating = document.getElementById('new-rating').value;
-
-            if(!title) return alert('اكتب الاسم');
-
-            const { error } = await _supabase.from('novels').insert([{ title, image, genres, rating }]);
-            
-            if(error) {
-                alert('حدث خطأ أثناء النشر السحابي');
-            } else {
-                alert('تم حفظ الرواية الجديدة!');
-                document.getElementById('new-title').value = '';
-                await fetchNovelsFromCloud();
-                showSection('home-section');
-            }
-        }
-
-        async function createNewChapter() {
-            const novelId = document.getElementById('select-novel').value;
-            const chTitle = document.getElementById('chapter-title').value;
-            const chContent = document.getElementById('chapter-content').value;
-
-            if(!chTitle || !chContent) return alert('تأكد من تعبئة الخانات');
-
-            const { error } = await _supabase.from('chapters').insert([{ novel_id: novelId, title: chTitle, content: chContent }]);
-
-            if(error) {
-                alert('خطأ في إرسال الفصل');
-            } else {
-                alert('تم نشر الفصل سحابياً!');
-                document.getElementById('chapter-title').value = '';
-                document.getElementById('chapter-content').value = '';
-                await fetchNovelsFromCloud();
-                showSection('home-section');
-            }
-        }
-
-        function checkAdminPassword() {
-            const promptPass = prompt("أدخل كلمة مرور الإدارة السرية للدخول:");
-            if(promptPass === ADMIN_PASSWORD) {
-                showSection('admin-section');
-            } else if(promptPass !== null) {
-                alert("كلمة المرور خاطئة!");
-            }
-        }
-
         function openNovelDetail(id) {
             const novel = globalNovels.find(n => n.id == id);
             if(!novel) return;
@@ -509,10 +311,11 @@
             const list = document.getElementById('chapters-display-list');
             list.innerHTML = '';
             if(novel.chapters.length === 0) {
-                list.innerHTML = '<p style="color: var(--text-muted)">لا توجد فصول منشورة بعد لهذه الرواية.</p>';
+                list.innerHTML = '<p style="color: var(--text-muted)">لا توجد فصول منشورة بعد.</p>';
             } else {
                 novel.chapters.forEach((chapter, index) => {
-                    list.innerHTML += `<li onclick="readChapter(${id}, ${index})">${chapter.title}</li>`;
+                    // سيتولى السكريبت المستدعى في الأعلى فتح الإعلان تلقائياً عند النقر هنا
+                    list.innerHTML += `<li onclick="readChapter(${id}, ${index});">${chapter.title}</li>`;
                 });
             }
         }
@@ -526,6 +329,116 @@
             document.getElementById('reader-text-box').innerText = chapter.content;
 
             document.getElementById('back-to-novel-btn').onclick = function() { openNovelDetail(novelId); };
+        }
+
+        function updateNovelSelects() {
+            const selectAdd = document.getElementById('select-novel');
+            const selectEdit = document.getElementById('edit-select-novel');
+            const selectEditChapNovel = document.getElementById('edit-chapter-select-novel');
+            let options = '';
+            globalNovels.forEach(novel => { options += `<option value="${novel.id}">${novel.title}</option>`; });
+            if(selectAdd) selectAdd.innerHTML = options;
+            if(selectEdit) { selectEdit.innerHTML = options; loadNovelDataToEdit(); }
+            if(selectEditChapNovel) { selectEditChapNovel.innerHTML = options; updateEditChapterSelect(); }
+        }
+
+        function loadNovelDataToEdit() {
+            const novelId = document.getElementById('edit-select-novel').value;
+            const novel = globalNovels.find(n => n.id == novelId);
+            if(novel) {
+                document.getElementById('edit-title').value = novel.title;
+                document.getElementById('edit-image').value = novel.image;
+                document.getElementById('edit-genres').value = novel.genres;
+                document.getElementById('edit-rating').value = novel.rating;
+            }
+        }
+
+        function updateEditChapterSelect() {
+            const novelId = document.getElementById('edit-chapter-select-novel').value;
+            const novel = globalNovels.find(n => n.id == novelId);
+            const selectChapter = document.getElementById('edit-select-chapter');
+            if(novel && selectChapter) {
+                selectChapter.innerHTML = '';
+                if(novel.chapters.length === 0) {
+                    selectChapter.innerHTML = '<option value="">لا توجد فصول</option>';
+                    document.getElementById('edit-chapter-title').value = '';
+                    document.getElementById('edit-chapter-content').value = '';
+                    return;
+                }
+                novel.chapters.forEach(ch => { selectChapter.innerHTML += `<option value="${ch.id}">${ch.title}</option>`; });
+                loadChapterDataToEdit();
+            }
+        }
+
+        function loadChapterDataToEdit() {
+            const novelId = document.getElementById('edit-chapter-select-novel').value;
+            const chapterId = document.getElementById('edit-select-chapter').value;
+            const novel = globalNovels.find(n => n.id == novelId);
+            if(novel && chapterId) {
+                const chapter = novel.chapters.find(ch => ch.id == chapterId);
+                if(chapter) {
+                    document.getElementById('edit-chapter-title').value = chapter.title;
+                    document.getElementById('edit-chapter-content').value = chapter.content;
+                }
+            }
+        }
+
+        async function updateChapter() {
+            const chapterId = document.getElementById('edit-select-chapter').value;
+            const title = document.getElementById('edit-chapter-title').value;
+            const content = document.getElementById('edit-chapter-content').value;
+            if(!chapterId || !title || !content) return alert('تأكد من تعبئة جميع الحقول');
+            const { error } = await _supabase.from('chapters').update({ title, content }).eq('id', chapterId);
+            if(error) alert('حدث خطأ'); else { alert('تم تحديث الفصل!'); await fetchNovelsFromCloud(); showSection('home-section'); }
+        }
+
+        async function deleteChapter() {
+            const chapterId = document.getElementById('edit-select-chapter').value;
+            if(!chapterId || !confirm("هل تريد حذف هذا الفصل؟")) return;
+            const { error } = await _supabase.from('chapters').delete().eq('id', chapterId);
+            if(error) alert('حدث خطأ'); else { alert('تم الحذف!'); await fetchNovelsFromCloud(); showSection('home-section'); }
+        }
+
+        async function updateNovel() {
+            const novelId = document.getElementById('edit-select-novel').value;
+            const title = document.getElementById('edit-title').value;
+            const image = document.getElementById('edit-image').value;
+            const genres = document.getElementById('edit-genres').value;
+            const rating = document.getElementById('edit-rating').value;
+            const { error } = await _supabase.from('novels').update({ title, image, genres, rating }).eq('id', novelId);
+            if(error) alert('حدث خطأ'); else { alert('تم تعديل بيانات الرواية!'); await fetchNovelsFromCloud(); showSection('home-section'); }
+        }
+
+        async function deleteNovel() {
+            const novelId = document.getElementById('edit-select-novel').value;
+            if(!confirm("هل أنت متأكد من حذف الرواية؟")) return;
+            const { error } = await _supabase.from('novels').delete().eq('id', novelId);
+            if(error) alert('حدث خطأ'); else { alert('تم الحذف.'); await fetchNovelsFromCloud(); showSection('home-section'); }
+        }
+
+        async function createNewNovel() {
+            const title = document.getElementById('new-title').value;
+            const image = document.getElementById('new-image').value || 'https://via.placeholder.com/400x560?text=No+Cover';
+            const genres = document.getElementById('new-genres').value;
+            const rating = document.getElementById('new-rating').value;
+            if(!title) return alert('الاسم مطلوب');
+            const { error } = await _supabase.from('novels').insert([{ title, image, genres, rating }]);
+            if(error) alert('حدث خطأ'); else { alert('تم حفظ الرواية!'); await fetchNovelsFromCloud(); showSection('home-section'); }
+        }
+
+        async function createNewChapter() {
+            const novelId = document.getElementById('select-novel').value;
+            const chTitle = document.getElementById('chapter-title').value;
+            const chContent = document.getElementById('chapter-content').value;
+            if(!chTitle || !chContent) return alert('تأكد من البيانات');
+            const { error } = await _supabase.from('chapters').insert([{ novel_id: novelId, title: chTitle, content: chContent }]);
+            if(error) alert('حدث خطأ'); else { alert('تم نشر الفصل!'); await fetchNovelsFromCloud(); showSection('home-section'); }
+        }
+
+        function checkAdminPassword() {
+            const promptPass = prompt("أدخل كلمة مرور الإدارة:");
+            if(promptPass === ADMIN_PASSWORD) showSection('admin-section');
+            else if(promptPass !== null) alert("خاطئة!");
         }
 
         function showSection(sectionId) {
