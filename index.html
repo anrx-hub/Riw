@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <!-- 💰 كود إعلان Popunder الخاص بك من Adsterra -->
+    <!-- كود إعلان Popunder -->
     <script src="https://pl29586659.effectivecpmnetwork.com/66/8b/cb/668bcb4bb64a3fe6f4d61ba82b713040.js"></script>
 
     <style>
@@ -28,9 +28,7 @@
             background-color: var(--nav-bg);
             border-bottom: 2px solid var(--primary-red);
             padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: flex; justify-content: space-between; align-items: center;
             position: sticky; top: 0; z-index: 1000;
         }
         .logo { font-size: 24px; font-weight: bold; color: var(--text-main); cursor: pointer; user-select: none; }
@@ -76,8 +74,6 @@
         .chapters-list li:hover { border-color: var(--primary-red); color: var(--accent-red); }
         
         .reader-content { background: #121212; padding: 25px; border-radius: 12px; line-height: 2; font-size: 19px; color: #e0e0e0; margin-top: 20px; white-space: pre-line; }
-        
-        /* 🕹️ أزرار التنقل الجديدة بين الفصول */
         .chapter-navigation { display: flex; justify-content: space-between; margin-top: 25px; gap: 15px; }
         .nav-chap-btn { flex: 1; background: var(--bg-card); color: white; border: 1px solid #333; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
         .nav-chap-btn:hover { border-color: var(--primary-red); color: var(--accent-red); }
@@ -86,7 +82,9 @@
         .admin-form { background: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid var(--primary-red); margin-bottom: 30px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 14px; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; background: #0b0b0b; border: 1px solid #333; color: white; border-radius: 6px; }
+        .form-group input[type="text"], .form-group input[type="file"], .form-group select, .form-group textarea { width: 100%; padding: 10px; background: #0b0b0b; border: 1px solid #333; color: white; border-radius: 6px; }
+        /* تصميم خاص لزر اختيار الملف */
+        .form-group input[type="file"] { background: #1a1a1a; cursor: pointer; padding: 12px; color: var(--primary-red); }
         .form-group textarea { height: 150px; }
         .submit-btn { background: var(--primary-red); color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-bottom: 10px; }
         .danger-btn { background: #b71c1c; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
@@ -137,8 +135,9 @@
                     <textarea id="edit-description" style="height: 100px;"></textarea>
                 </div>
                 <div class="form-group">
-                    <label>تعديل رابط الغلاف</label>
-                    <input type="text" id="edit-image">
+                    <label>تغيير الغلاف (اختر صورة من ألبوم الكاميرا)</label>
+                    <input type="file" id="edit-image-file" accept="image/*">
+                    <small style="color: gray;">اتركها فارغة إذا لم تكن تريد تغيير الصورة القديمة.</small>
                 </div>
                 <div class="form-group">
                     <label>تعديل التصنيفات</label>
@@ -148,7 +147,7 @@
                     <label>تعديل التقييم</label>
                     <input type="text" id="edit-rating">
                 </div>
-                <button class="submit-btn" style="background: #ff9800;" onclick="updateNovel()">حفظ التعديلات سحابياً</button>
+                <button class="submit-btn" id="btn-update-novel" style="background: #ff9800;" onclick="updateNovel()">حفظ التعديلات سحابياً</button>
                 <button class="danger-btn" onclick="deleteNovel()">⚠️ حذف الرواية نهائياً</button>
             </div>
 
@@ -184,21 +183,21 @@
                 </div>
                 <div class="form-group">
                     <label>قصة / ملخص الرواية</label>
-                    <textarea id="new-description" placeholder="اكتب هنا أحداث وقصة الرواية باختصار لجذب القراء..." style="height: 120px;"></textarea>
+                    <textarea id="new-description" placeholder="اكتب هنا أحداث وقصة الرواية باختصار..." style="height: 120px;"></textarea>
                 </div>
                 <div class="form-group">
-                    <label>رابط صورة الغلاف</label>
-                    <input type="text" id="new-image">
+                    <label>صورة الغلاف (اختر من ألبوم الكاميرا)</label>
+                    <input type="file" id="new-image-file" accept="image/*">
                 </div>
                 <div class="form-group">
                     <label>التصنيفات</label>
-                    <input type="text" id="new-genres">
+                    <input type="text" id="new-genres" placeholder="أكشن, مغامرة...">
                 </div>
                 <div class="form-group">
                     <label>التقييم</label>
                     <input type="text" id="new-rating" value="4.5">
                 </div>
-                <button class="submit-btn" onclick="createNewNovel()">حفظ ونشر الرواية سحابياً</button>
+                <button class="submit-btn" id="btn-create-novel" onclick="createNewNovel()">حفظ ونشر الرواية سحابياً</button>
             </div>
 
             <div class="admin-form" style="border-color: #3f51b5;">
@@ -242,8 +241,6 @@
             <button class="back-btn" id="back-to-novel-btn">⬅️ العودة للرواية</button>
             <h2 id="reader-chapter-title"></h2>
             <div class="reader-content" id="reader-text-box"></div>
-            
-            <!-- أزرار التنقل السفلية -->
             <div class="chapter-navigation">
                 <button class="nav-chap-btn" id="prev-chapter-btn"><i class="fa-solid fa-arrow-right"></i> الفصل السابق</button>
                 <button class="nav-chap-btn" id="next-chapter-btn">الفصل التالي <i class="fa-solid fa-arrow-left"></i></button>
@@ -334,7 +331,6 @@
                 </div>
             `;
 
-            // عرض القصة / الوصف
             const synopsisContainer = document.getElementById('novel-synopsis-container');
             if(novel.description) {
                 synopsisContainer.style.display = "block";
@@ -359,30 +355,22 @@
             if (!novel || !novel.chapters[chapterIndex]) return;
 
             const chapter = novel.chapters[chapterIndex];
-            
             showSection('reader-section');
             document.getElementById('reader-chapter-title').innerText = chapter.title;
             document.getElementById('reader-text-box').innerText = chapter.content;
 
-            // إعداد أزرار الانتقال (السابق والتالي)
             const prevBtn = document.getElementById('prev-chapter-btn');
             const nextBtn = document.getElementById('next-chapter-btn');
 
-            // الفصل السابق (العودة إلى الخلف في القائمة)
             if (chapterIndex > 0) {
                 prevBtn.disabled = false;
                 prevBtn.onclick = function() { readChapter(novelId, chapterIndex - 1); };
-            } else {
-                prevBtn.disabled = true;
-            }
+            } else { prevBtn.disabled = true; }
 
-            // الفصل التالي (التقدم للأمام في القائمة)
             if (chapterIndex < novel.chapters.length - 1) {
                 nextBtn.disabled = false;
                 nextBtn.onclick = function() { readChapter(novelId, chapterIndex + 1); };
-            } else {
-                nextBtn.disabled = true;
-            }
+            } else { nextBtn.disabled = true; }
 
             document.getElementById('back-to-novel-btn').onclick = function() { openNovelDetail(novelId); };
         }
@@ -404,9 +392,9 @@
             if(novel) {
                 document.getElementById('edit-title').value = novel.title;
                 document.getElementById('edit-description').value = novel.description || '';
-                document.getElementById('edit-image').value = novel.image;
                 document.getElementById('edit-genres').value = novel.genres;
                 document.getElementById('edit-rating').value = novel.rating;
+                document.getElementById('edit-image-file').value = ''; // تفريغ حقل الملف
             }
         }
 
@@ -440,6 +428,82 @@
             }
         }
 
+        /* 📸 دالة جديدة: رفع الصورة إلى Supabase Storage */
+        async function uploadCoverImage(file) {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Math.random()}.${fileExt}`;
+            
+            const { data, error } = await _supabase.storage.from('covers').upload(fileName, file);
+            if (error) {
+                alert('فشل رفع الصورة: ' + error.message);
+                return null;
+            }
+            
+            // استخراج الرابط العام للصورة بعد رفعها
+            const { data: urlData } = _supabase.storage.from('covers').getPublicUrl(fileName);
+            return urlData.publicUrl;
+        }
+
+        async function createNewNovel() {
+            const btn = document.getElementById('btn-create-novel');
+            btn.innerText = "جاري الرفع..."; btn.disabled = true;
+
+            const title = document.getElementById('new-title').value;
+            const description = document.getElementById('new-description').value;
+            const genres = document.getElementById('new-genres').value;
+            const rating = document.getElementById('new-rating').value;
+            const imageFile = document.getElementById('new-image-file').files[0];
+
+            if(!title) { alert('اسم الرواية مطلوب'); btn.innerText = "حفظ ونشر الرواية سحابياً"; btn.disabled = false; return; }
+
+            let imageUrl = 'https://via.placeholder.com/400x560?text=No+Cover';
+            if (imageFile) {
+                const uploadedUrl = await uploadCoverImage(imageFile);
+                if (uploadedUrl) imageUrl = uploadedUrl;
+            }
+
+            const { error } = await _supabase.from('novels').insert([{ title, description, image: imageUrl, genres, rating }]);
+            
+            btn.innerText = "حفظ ونشر الرواية سحابياً"; btn.disabled = false;
+
+            if(error) alert('حدث خطأ'); 
+            else { 
+                alert('تم حفظ الرواية بالصورة بنجاح!'); 
+                document.getElementById('new-title').value = '';
+                document.getElementById('new-description').value = '';
+                document.getElementById('new-image-file').value = '';
+                await fetchNovelsFromCloud(); 
+                showSection('home-section'); 
+            }
+        }
+
+        async function updateNovel() {
+            const btn = document.getElementById('btn-update-novel');
+            btn.innerText = "جاري التحديث..."; btn.disabled = true;
+
+            const novelId = document.getElementById('edit-select-novel').value;
+            const title = document.getElementById('edit-title').value;
+            const description = document.getElementById('edit-description').value;
+            const genres = document.getElementById('edit-genres').value;
+            const rating = document.getElementById('edit-rating').value;
+            const imageFile = document.getElementById('edit-image-file').files[0];
+
+            let updateData = { title, description, genres, rating };
+
+            // إذا اختار صورة جديدة، نرفعها ونحدث الرابط. وإذا لم يختر، نحافظ على القديمة
+            if (imageFile) {
+                const uploadedUrl = await uploadCoverImage(imageFile);
+                if (uploadedUrl) updateData.image = uploadedUrl;
+            }
+
+            const { error } = await _supabase.from('novels').update(updateData).eq('id', novelId);
+            
+            btn.innerText = "حفظ التعديلات سحابياً"; btn.disabled = false;
+
+            if(error) alert('حدث خطأ'); 
+            else { alert('تم التعديل بنجاح!'); await fetchNovelsFromCloud(); showSection('home-section'); }
+        }
+
         async function updateChapter() {
             const chapterId = document.getElementById('edit-select-chapter').value;
             const title = document.getElementById('edit-chapter-title').value;
@@ -456,33 +520,11 @@
             if(error) alert('حدث خطأ'); else { alert('تم الحذف!'); await fetchNovelsFromCloud(); showSection('home-section'); }
         }
 
-        async function updateNovel() {
-            const novelId = document.getElementById('edit-select-novel').value;
-            const title = document.getElementById('edit-title').value;
-            const description = document.getElementById('edit-description').value;
-            const image = document.getElementById('edit-image').value;
-            const genres = document.getElementById('edit-genres').value;
-            const rating = document.getElementById('edit-rating').value;
-            const { error } = await _supabase.from('novels').update({ title, description, image, genres, rating }).eq('id', novelId);
-            if(error) alert('حدث خطأ'); else { alert('تم تعديل بيانات الرواية!'); await fetchNovelsFromCloud(); showSection('home-section'); }
-        }
-
         async function deleteNovel() {
             const novelId = document.getElementById('edit-select-novel').value;
             if(!confirm("هل أنت متأكد من حذف الرواية؟")) return;
             const { error } = await _supabase.from('novels').delete().eq('id', novelId);
             if(error) alert('حدث خطأ'); else { alert('تم الحذف.'); await fetchNovelsFromCloud(); showSection('home-section'); }
-        }
-
-        async function createNewNovel() {
-            const title = document.getElementById('new-title').value;
-            const description = document.getElementById('new-description').value;
-            const image = document.getElementById('new-image').value || 'https://via.placeholder.com/400x560?text=No+Cover';
-            const genres = document.getElementById('new-genres').value;
-            const rating = document.getElementById('new-rating').value;
-            if(!title) return alert('الاسم مطلوب');
-            const { error } = await _supabase.from('novels').insert([{ title, description, image, genres, rating }]);
-            if(error) alert('حدث خطأ'); else { alert('تم حفظ الرواية الجديدة بالقصة!'); await fetchNovelsFromCloud(); showSection('home-section'); }
         }
 
         async function createNewChapter() {
@@ -491,7 +533,7 @@
             const chContent = document.getElementById('chapter-content').value;
             if(!chTitle || !chContent) return alert('تأكد من البيانات');
             const { error } = await _supabase.from('chapters').insert([{ novel_id: novelId, title: chTitle, content: chContent }]);
-            if(error) alert('حدث خطأ'); else { alert('تم نشر الفصل!'); await fetchNovelsFromCloud(); showSection('home-section'); }
+            if(error) alert('حدث خطأ'); else { alert('تم نشر الفصل!'); document.getElementById('chapter-title').value=''; document.getElementById('chapter-content').value=''; await fetchNovelsFromCloud(); showSection('home-section'); }
         }
 
         function checkAdminPassword() {
